@@ -1,0 +1,108 @@
+{
+    "CreateRequest": {
+        "title": "Create request",
+        "type": "object",
+        "properties": {
+            "userId": {
+                "type": "integer"
+            },
+            "title": {
+                "type": "string",
+                "minLength": 1,
+                "x-trim": true
+            },
+            "description": {
+                "type": "string",
+                "minLength": 1
+            }
+        },
+        "required": [
+            "userId",
+            "title",
+            "description"
+        ]
+    },
+    "TodoDataResponse": {
+        "title": "Todo data response",
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "integer"
+            },
+            "userId": {
+                "type": "integer"
+            },
+            "title": {
+                "type": "string"
+            },
+            "description": {
+                "type": "string"
+            },
+            "status": {
+                "type": "string"
+            }
+        }
+    },
+    "TodoUserDataResponse": {
+        "title": "Todo data response",
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "integer"
+            },
+            "title": {
+                "type": "string"
+            },
+            "description": {
+                "type": "string"
+            },
+            "status": {
+                "type": "string"
+            },
+            "firstName": {
+                "type": "string"
+            },
+            "lastName": {
+                "type": "string"
+            }
+        }
+    },
+    "TodoList": {
+        "type": "array",
+        "items": {
+            "$ref": "#/definitions/TodoDataResponse"
+        }
+    },
+    "UpdateTodoRequest": {
+        "title": "Update todo data",
+        "type": "object",
+        "properties": {
+            "title": {
+                "type": "string",
+                "minLength": 1,
+                "x-trim": true
+            },
+            "description": {
+                "type": "string",
+                "minLength": 1
+            },
+            "status": {
+                "type": "string",
+                "enum": ["pending", "completed", "failed"]
+            }
+        }
+    },
+    "UpdateTodoStatus": {
+        "title": "Update todo status",
+        "type": "object",
+        "properties": {
+            "status": {
+                "type": "string",
+                "enum": ["pending", "completed", "failed"]
+            }
+        },
+        "required": [
+            "status"
+        ]
+    }
+}

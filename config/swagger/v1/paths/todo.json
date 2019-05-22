@@ -1,0 +1,253 @@
+{
+    "/todo": {
+        "x-summary": "Todo",
+        "get": {
+            "summary": "Get all todo",
+            "x-swagger-router-controller": "TodoController",
+            "operationId": "listTodo",
+            "tags": [
+                "todo"
+            ],
+            "security": [
+                {
+                    "AuthToken": []
+                }
+            ],
+            "x-auth-required": false,
+            "parameters": [
+                {
+                    "in": "query",
+                    "name": "limit",
+                    "default": 10,
+                    "type": "integer"
+                },
+                {
+                    "in": "query",
+                    "name": "offset",
+                    "type": "integer",
+                    "default": 0
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Successfully getting todo data",
+                    "schema": {
+                        "$ref": "#/definitions/TodoList"
+                    }
+                },
+                "401": {
+                    "description": "Unauthorized"
+                }
+            }
+        },
+        "post": {
+            "summary": "Create new todo",
+            "x-swagger-router-controller": "TodoController",
+            "operationId": "create",
+            "tags": [
+                "todo"
+            ],
+            "security": [
+                {
+                    "AuthToken": []
+                }
+            ],
+            "parameters": [
+                {
+                    "name": "body",
+                    "in": "body",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/CreateRequest"
+                    }
+                }
+            ],
+            "responses": {
+                "201": {
+                    "description": "Todo created",
+                    "schema": {
+                        "$ref": "#/definitions/TodoDataResponse"
+                    }
+                },
+                "400": {
+                    "description": "Bad request"
+                }
+            }
+        }
+    },
+    "/todo/user": {
+        "x-summary": "Todo",
+        "get": {
+            "summary": "Get all todo",
+            "x-swagger-router-controller": "TodoController",
+            "operationId": "listTodoAll",
+            "tags": [
+                "todo"
+            ],
+            "security": [
+                {
+                    "AuthToken": []
+                }
+            ],
+            "x-auth-required": false,
+            "parameters": [
+                {
+                    "in": "query",
+                    "name": "limit",
+                    "default": 10,
+                    "type": "integer"
+                },
+                {
+                    "in": "query",
+                    "name": "offset",
+                    "type": "integer",
+                    "default": 0
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Successfully getting todo data",
+                    "schema": {
+                        "$ref": "#/definitions/TodoUserDataResponse"
+                    }
+                },
+                "401": {
+                    "description": "Unauthorized"
+                }
+            }
+        }
+    },
+    "/todo/status/{todoId}": {
+        "x-summary": "Todo",
+        "put": {
+            "summary": "Update todo status",
+            "x-swagger-router-controller": "TodoController",
+            "operationId": "updateTodoStatus",
+            "tags": [
+                "todo"
+            ],
+            "security": [
+                {
+                    "AuthToken": []
+                }
+            ],
+            "x-auth-required": false,
+            "parameters": [
+                {
+                    "in": "path",
+                    "name": "todoId",
+                    "type": "integer",
+                    "required": true
+                },
+                {
+                    "name": "body",
+                    "in": "body",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/UpdateTodoStatus"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Successfully updated user",
+                    "schema": {
+                        "$ref": "#/definitions/TodoDataResponse"
+                    }
+                },
+                "400": {
+                    "description": "Bad request"
+                },
+                "401": {
+                    "description": "Unauthorized"
+                }
+            }
+        }
+    },
+    "/todo/{todoId}": {
+        "x-summary": "Todo",
+        "get": {
+            "summary": "List todo",
+            "x-swagger-router-controller": "TodoController",
+            "operationId": "getTodo",
+            "tags": [
+                "todo"
+            ],
+            "security": [
+                {
+                    "AuthToken": []
+                }
+            ],
+            "x-auth-required": false,
+            "parameters": [
+                {
+                    "in": "path",
+                    "name": "todoId",
+                    "type": "integer",
+                    "required": true
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Successfully getting users",
+                    "schema": {
+                        "$ref": "#/definitions/TodoDataResponse"
+                    }
+                },
+                "401": {
+                    "description": "Unauthorized"
+                },
+                "403": {
+                    "description": "Forbidden"
+                },
+                "404": {
+                    "description": "Not found"
+                }
+            }
+        },
+        "put": {
+            "summary": "Update todo data",
+            "x-swagger-router-controller": "TodoController",
+            "operationId": "updateTodo",
+            "tags": [
+                "todo"
+            ],
+            "security": [
+                {
+                    "AuthToken": []
+                }
+            ],
+            "x-auth-required": false,
+            "parameters": [
+                {
+                    "in": "path",
+                    "name": "todoId",
+                    "type": "integer",
+                    "required": true
+                },
+                {
+                    "name": "body",
+                    "in": "body",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/UpdateTodoRequest"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Successfully updated user",
+                    "schema": {
+                        "$ref": "#/definitions/TodoDataResponse"
+                    }
+                },
+                "400": {
+                    "description": "Bad request"
+                },
+                "401": {
+                    "description": "Unauthorized"
+                }
+            }
+        }
+    }
+}
