@@ -21,7 +21,7 @@ const port = process.env.PORT || 8000;
 const apiVersions = Object.keys(apiVersionSettings);
 
 Promise.all(apiVersions.map(swaggerMiddleware.initialize)).then(values => {
-    app.use(helmet());
+    app.use(helmet()); // meta data
     app.use(cors());
     
     app.use(bodyParser.urlencoded({ extended: false }));

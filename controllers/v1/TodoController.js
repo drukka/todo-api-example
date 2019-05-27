@@ -91,7 +91,7 @@ exports.getTodo = async (req, res, next) => {
     }
     
     if(!todo){
-        return Promise.reject(new HTTPError(404));
+        return res.sendStatus('404');
     }
 };
 
@@ -99,7 +99,7 @@ exports.updateTodo = async (req, res, next) => {
     const todo = await findTodoById(req.swagger.params.todoId.value);
     
     if(!todo){
-        return Promise.reject(new HTTPError(404));
+        return res.sendStatus('404');
     }
     
     if(todo){
@@ -110,7 +110,7 @@ exports.updateTodo = async (req, res, next) => {
             updatedAt: new Date()
         });
     
-        return res.status(201).json(todoDataResponse(updated));
+        return res.status(200).json(todoDataResponse(updated));
     }
 };
 
@@ -119,7 +119,7 @@ exports.updateTodoStatus = async (req, res, next) => {
     const todo = await findTodoById(req.swagger.params.todoId.value);
     
     if(!todo){
-        return Promise.reject(new HTTPError(404));
+        return res.sendStatus('404');
     }
     
     if(todo){
@@ -128,7 +128,7 @@ exports.updateTodoStatus = async (req, res, next) => {
             updatedAt: new Date()
         });
         
-        return res.status(201).json(todoDataResponse(updated));
+        return res.status(200).json(todoDataResponse(updated));
     }
 };
 
@@ -140,10 +140,10 @@ exports.create = async (req, res, next) => {
     
     const todo = await createTodo(req.body);
     if(todo){
-        return res.status(201).json(todoDataResponse(todo));
+        return res.status(200).json(todoDataResponse(todo));
     }
     
     if(!todo){
-        return promiseError.handle(res);
+        return res.sendStatus('404');
     }
 };

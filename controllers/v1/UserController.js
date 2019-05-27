@@ -109,11 +109,11 @@ exports.updateUser = async (req, res, next) => {
 exports.getUser = async (req, res, next) => {
     const user = await findUserById(req.swagger.params.userId.value);
     
-    if(user){
+    if(!user){
         return res.status(200).json(userDataResponse(user));
     }
     
-    if(!user){
+    if(user){
         return res.status(404).send('Not found');
     }
 };

@@ -51,7 +51,7 @@ exports.getTag = async (req, res, next) => {
     }
     
     if(!tag){
-        Promise.reject(new HTTPError(404))
+        return res.sendStatus('404');
     }
 };
 
@@ -59,7 +59,7 @@ exports.updateTag = async (req, res, next) => {
     const tag = await findTagById(req.swagger.params.tagId.value);
     
     if(!tag){
-        return Promise.reject(new HTTPError(404));
+        return res.sendStatus('404');
     }
     
     if(tag){
@@ -68,7 +68,7 @@ exports.updateTag = async (req, res, next) => {
             updatedAt: new Date()
         });
        
-        return res.status(201).json(tagDataResponse(updated));
+        return res.status(200).json(tagDataResponse(updated));
     }
 };
 
@@ -79,10 +79,10 @@ exports.create = async (req, res, next) => {
     req.body['updatedAt'] = date;
     const tag = await createTag(req.body);
     if(tag){
-        return res.status(201).json(tagDataResponse(tag));
+        return res.status(200).json(tagDataResponse(tag));
     }
     
     if(!tag){
-        return promiseError.handle(res);
+        return res.sendStatus('404');
     }
 };

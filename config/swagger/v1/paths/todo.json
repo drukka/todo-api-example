@@ -63,7 +63,7 @@
                 }
             ],
             "responses": {
-                "201": {
+                "200": {
                     "description": "Todo created",
                     "schema": {
                         "$ref": "#/definitions/TodoDataResponse"
