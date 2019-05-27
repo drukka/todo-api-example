@@ -1,0 +1,45 @@
+{
+    "CreateRequestTag": {
+        "title": "Create request",
+        "type": "object",
+        "properties": {
+            "name": {
+                "type": "string",
+                "minLength": 1,
+                "x-trim": true
+            }
+        },
+        "required": [
+            "name"
+        ]
+    },
+    "TagDataResponse": {
+        "title": "Tag data response",
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "integer"
+            },
+            "name": {
+                "type": "string"
+            }
+        }
+    },
+    "TagList": {
+        "type": "array",
+        "items": {
+            "$ref": "#/definitions/TagDataResponse"
+        }
+    },
+    "UpdateTagRequest": {
+        "title": "Update tag data",
+        "type": "object",
+        "properties": {
+            "name": {
+                "type": "string",
+                "minLength": 1,
+                "x-trim": true
+            }
+        }
+    }
+}

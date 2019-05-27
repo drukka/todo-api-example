@@ -24,17 +24,17 @@ const todoDataResponse = (todo) => {
     };
 };
 
-const getTodo = (limit, offset) => {
-    return Todo.findAll({
+const getTodo = async (limit, offset) => {
+    return await Todo.findAll({
         order: [['id', 'ASC']],
         limit,
         offset,
     });
 };
 
-const gerTodoAndUser = (limit, offset) => {
+const gerTodoAndUser = async (limit, offset) => {
     
-    return Todo.findAll({
+    return await Todo.findAll({
         order: [['id', 'ASC']],
         include: [
             {
@@ -46,8 +46,8 @@ const gerTodoAndUser = (limit, offset) => {
     });
 };
 
-const findTodoById = (id, includes = []) => {
-    return Todo.findOne({
+const findTodoById = async (id, includes = []) => {
+    return await Todo.findOne({
         include: includes,
         where: {
             id: id,
@@ -55,76 +55,95 @@ const findTodoById = (id, includes = []) => {
     });
 };
 
-const createTodo = (data) => {
-    return Todo.create(data).then(todo => {
-        return todo;
-    }).catch(error => console.log(error));
+const createTodo = async (data) => {
+    return await Todo.create(data);
 };
 
-exports.listTodoAll = (req, res, next) => {
-    gerTodoAndUser(req.swagger.params.limit.value,
-        req.swagger.params.offset.value,
-    )
-        .then(
-            todoData => res.json(todoData.map(todo => todoAndUserDataResponse(todo))))
-        .catch(promiseError.handle(res));
+exports.listTodoAll = async (req, res, next) => {
+    const todoData = await gerTodoAndUser(req.swagger.params.limit.value, req.swagger.params.offset.value);
+    
+    if(todoData){
+        return res.json(todoData.map(todo => todoAndUserDataResponse(todo)));
+    }
+    
+    if(!todoData){
+        return res.status('203').send('Empty todo data.');
+    }
 };
 
-exports.listTodo = (req, res, next) => {
-    getTodo(req.swagger.params.limit.value, req.swagger.params.offset.value)
-        .then(todoData => res.json(todoData.map(todo => todoDataResponse(todo))))
-        .catch(promiseError.handle(res));
+exports.listTodo = async (req, res, next) => {
+    const todoData = await getTodo(req.swagger.params.limit.value, req.swagger.params.offset.value);
+    
+    if(todoData) {
+        return res.json(todoData.map(todo => todoDataResponse(todo)));
+    }
+    
+    if(!todoData){
+        return res.status('203').send('Empty todo data.');
+    }
 };
 
-exports.getTodo = (req, res, next) => {
-    findTodoById(req.swagger.params.todoId.value)
-        .then(todo => !todo ? Promise.reject(new HTTPError(404)) : res.json(
-            todoDataResponse(todo)))
-        .catch(promiseError.handle(res));
+exports.getTodo = async (req, res, next) => {
+    const todo = await findTodoById(req.swagger.params.todoId.value);
+    
+    if(todo){
+        return res.json(todoDataResponse(todo));
+    }
+    
+    if(!todo){
+        return Promise.reject(new HTTPError(404));
+    }
 };
 
-exports.updateTodo = (req, res, next) => {
-    findTodoById(req.swagger.params.todoId.value)
-        .then(todo => {
-            if (!todo) {
-                return Promise.reject(new HTTPError(404));
-            }
-            todo.title = req.body.title
-            todo.description = req.body.description
-            todo.status = req.body.status
-            todo.updatedAt = new Date();
-            return todo.save()
-                .then(result => {
-                    return res.status(201).json(todoDataResponse(result));
-                })
-                .catch(err => console(err));
-        })
-        .catch(promiseError.handle(res));
+exports.updateTodo = async (req, res, next) => {
+    const todo = await findTodoById(req.swagger.params.todoId.value);
+    
+    if(!todo){
+        return Promise.reject(new HTTPError(404));
+    }
+    
+    if(todo){
+        const updated = await todo.update({
+            title: req.body.title,
+            description: req.body.description,
+            status: req.body.status,
+            updatedAt: new Date()
+        });
+    
+        return res.status(201).json(todoDataResponse(updated));
+    }
 };
 
-exports.updateTodoStatus = (req, res, next) => {
-    findTodoById(req.swagger.params.todoId.value)
-        .then(todo => {
-            if (!todo) {
-                return Promise.reject(new HTTPError(404));
-            }
-            todo.status = req.body.status
-            todo.updatedAt = new Date();
-            return todo.save()
-                .then(result => {
-                    return res.status(201).json(todoDataResponse(result));
-                })
-                .catch(err => console(err));
-        })
-        .catch(promiseError.handle(res));
+exports.updateTodoStatus = async (req, res, next) => {
+    
+    const todo = await findTodoById(req.swagger.params.todoId.value);
+    
+    if(!todo){
+        return Promise.reject(new HTTPError(404));
+    }
+    
+    if(todo){
+        const updated = await todo.update({
+            status: req.body.status,
+            updatedAt: new Date()
+        });
+        
+        return res.status(201).json(todoDataResponse(updated));
+    }
 };
 
-exports.create = (req, res, next) => {
+exports.create = async (req, res, next) => {
     const date = new Date();
     req.body['status'] = companyConfig.todoDefaultStatus;
     req.body['createdAt'] = date;
     req.body['updatedAt'] = date;
-    createTodo(req.body).then(response => {
-        return res.status(201).json(todoDataResponse(response));
-    }).catch(promiseError.handle(res));
+    
+    const todo = await createTodo(req.body);
+    if(todo){
+        return res.status(201).json(todoDataResponse(todo));
+    }
+    
+    if(!todo){
+        return promiseError.handle(res);
+    }
 };

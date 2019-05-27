@@ -1,0 +1,95 @@
+{
+    "NewTagRequest": {
+        "title": "Add new tag request",
+        "type": "object",
+        "properties": {
+            "name": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            }
+        },
+        "required": [
+            "name"
+        ]
+    },
+    "TodoTagsDataResponse": {
+        "title": "Tag data response",
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "integer"
+            },
+            "name": {
+                "type": "string"
+            }
+        }
+    },
+    "UpdateTodoTagRequest": {
+        "title": "Update tag data",
+        "type": "object",
+        "properties": {
+            "name": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            }
+        },
+        "required": [
+            "name"
+        ]
+    },
+    "TagTodosDataResponse":{
+        "title": "Todo data response",
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "integer"
+            },
+            "userId": {
+                "type": "integer"
+            },
+            "title": {
+                "type": "string"
+            },
+            "description": {
+                "type": "string"
+            },
+            "status": {
+                "type": "string"
+            }
+        }
+    },
+    "NewTodoRequest": {
+        "title": "Add new tag request",
+        "type": "object",
+        "properties": {
+            "title": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            }
+        },
+        "required": [
+            "title"
+        ]
+    },
+    "UpdateTagTodoRequest": {
+        "title": "Update tag data",
+        "type": "object",
+        "properties": {
+            "title": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            }
+        },
+        "required": [
+            "title"
+        ]
+    }
+}

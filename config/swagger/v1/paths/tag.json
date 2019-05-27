@@ -1,56 +1,19 @@
 {
-    "/users": {
-        "x-summary": "User",
-        "post": {
-            "summary": "Create new user",
-            "x-swagger-router-controller": "UserController",
-            "operationId": "register",
+    "/tags": {
+        "x-summary": "Tag",
+        "get": {
+            "summary": "Get all tags",
+            "x-swagger-router-controller": "TagController",
+            "operationId": "listTag",
             "tags": [
-                "user"
+                "tag"
             ],
             "security": [
                 {
                     "AuthToken": []
                 }
-            ],
-            "parameters": [
-                {
-                    "name": "body",
-                    "in": "body",
-                    "required": true,
-                    "schema": {
-                        "$ref": "#/definitions/RegistrationRequest"
-                    }
-                }
-            ],
-            "responses": {
-                "200": {
-                    "description": "User created",
-                    "schema": {
-                        "$ref": "#/definitions/UserDataResponse"
-                    }
-                },
-                "400": {
-                    "description": "Bad request"
-                },
-                "409": {
-                    "description": "Email address already in use"
-                }
-            }
-        },
-        "get": {
-            "summary": "List users",
-            "x-swagger-router-controller": "UserController",
-            "operationId": "getUsers",
-            "tags": [
-                "user"
             ],
             "x-auth-required": false,
-            "security": [
-                {
-                    "AuthToken": []
-                }
-            ],
             "parameters": [
                 {
                     "in": "query",
@@ -67,31 +30,62 @@
             ],
             "responses": {
                 "200": {
-                    "description": "Successfully listing users",
+                    "description": "Successfully getting tag data",
                     "schema": {
-                        "$ref": "#/definitions/UsersList"
+                        "$ref": "#/definitions/TagList"
+                    }
+                },
+                "203": {
+                    "description": "Empty tag data"
+                },
+                "401": {
+                    "description": "Unauthorized"
+                }
+            }
+        },
+        "post": {
+            "summary": "Create new tag",
+            "x-swagger-router-controller": "TagController",
+            "operationId": "create",
+            "tags": [
+                "tag"
+            ],
+            "security": [
+                {
+                    "AuthToken": []
+                }
+            ],
+            "parameters": [
+                {
+                    "name": "body",
+                    "in": "body",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/CreateRequestTag"
+                    }
+                }
+            ],
+            "responses": {
+                "201": {
+                    "description": "Tag created",
+                    "schema": {
+                        "$ref": "#/definitions/TagDataResponse"
                     }
                 },
                 "400": {
                     "description": "Bad request"
-                },
-                "401": {
-                    "description": "Unauthorized"
-                },
-                "403": {
-                    "description": "Forbidden"
                 }
             }
         }
     },
-    "/user/{userId}": {
-        "x-summary": "Users",
+    "/tag/{tagId}": {
+        "x-summary": "Tag",
         "get": {
-            "summary": "List user",
-            "x-swagger-router-controller": "UserController",
-            "operationId": "getUser",
+            "summary": "List tag",
+            "x-swagger-router-controller": "TagController",
+            "operationId": "getTag",
             "tags": [
-                "user"
+                "tag"
             ],
             "security": [
                 {
@@ -102,16 +96,16 @@
             "parameters": [
                 {
                     "in": "path",
-                    "name": "userId",
+                    "name": "tagId",
                     "type": "integer",
                     "required": true
                 }
             ],
             "responses": {
                 "200": {
-                    "description": "Successfully getting users",
+                    "description": "Successfully getting tag",
                     "schema": {
-                        "$ref": "#/definitions/UserDataResponse"
+                        "$ref": "#/definitions/TagDataResponse"
                     }
                 },
                 "401": {
@@ -126,11 +120,11 @@
             }
         },
         "put": {
-            "summary": "Update user data",
-            "x-swagger-router-controller": "UserController",
-            "operationId": "updateUser",
+            "summary": "Update tag data",
+            "x-swagger-router-controller": "TagController",
+            "operationId": "updateTag",
             "tags": [
-                "user"
+                "tag"
             ],
             "security": [
                 {
@@ -141,7 +135,7 @@
             "parameters": [
                 {
                     "in": "path",
-                    "name": "userId",
+                    "name": "tagId",
                     "type": "integer",
                     "required": true
                 },
@@ -150,15 +144,15 @@
                     "in": "body",
                     "required": true,
                     "schema": {
-                        "$ref": "#/definitions/UpdateUserRequest"
+                        "$ref": "#/definitions/UpdateTagRequest"
                     }
                 }
             ],
             "responses": {
                 "200": {
-                    "description": "Successfully updated user",
+                    "description": "Successfully updated tag",
                     "schema": {
-                        "$ref": "#/definitions/UserDataResponse"
+                        "$ref": "#/definitions/TagDataResponse"
                     }
                 },
                 "400": {
@@ -166,9 +160,6 @@
                 },
                 "401": {
                     "description": "Unauthorized"
-                },
-                "409": {
-                    "description": "Email address already in use"
                 }
             }
         }

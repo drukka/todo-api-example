@@ -1,17 +1,11 @@
 const {User} = require('../../models');
 const encryptConfig = require('../../config/encrypt');
 const companyConfig = require('../../config/company');
-const promiseError = require('../../helpers/promiseErrorHandler');
-const HTTPError = require('../../helpers/httpError');
 
 const bcrypt = require('bcrypt');
 
-
-/**
- * helpers
- */
-const countUsersWithEmail = (email) => {
-    return User.count({
+const countUsersWithEmail = async (email) => {
+    return await User.count({
         where: {
             email: email,
         },
@@ -27,8 +21,8 @@ const userDataResponse = (user) => {
     };
 };
 
-const findUserByEmail = (email, includes = []) => {
-    return User.findOne({
+const findUserByEmail = async (email, includes = []) => {
+    return await User.findOne({
         include: includes,
         where: {
             email: email,
@@ -36,8 +30,8 @@ const findUserByEmail = (email, includes = []) => {
     });
 };
 
-const findUserById = (id, includes = []) => {
-    return User.findOne({
+const findUserById = async (id, includes = []) => {
+    return await User.findOne({
         include: includes,
         where: {
             id: id,
@@ -45,69 +39,81 @@ const findUserById = (id, includes = []) => {
     });
 };
 
-const createUser = (data) => {
-    return User.create(data)
-        .then(user => {
-            return user;
-        }).catch(err => console(err));
+const createUser = async (data) => {
+    return await User.create(data);
 };
-
 
 const randomNumber = (power = 4) => {
     return Math.floor(Math.random() * Math.pow(10, power));
 };
 
-
-
-const getUsers = (limit, offset) => {
-    const userData = User.findAll({
+const getUsers = async (limit, offset) => {
+    return await User.findAll({
         order: [['id', 'ASC']],
         limit,
         offset,
     });
-    //console.log(userData);
-    return userData;
 };
 
-/**
- * controllers
- */
-exports.register = (req, res) => {
-    countUsersWithEmail(req.body.email).then(count => {
-        if (count > 0) {
-            return Promise.reject(new HTTPError(409));
-        }
-        
-        return bcrypt.hash(req.body.password, encryptConfig.saltRounds);
-    }).then(hash => {
-        req.body['password'] = hash;
-        return createUser(req.body);
-    }).then(response => {
-        res.status(201).json(response);
-    }).catch(promiseError.handle(res));
+exports.register = async (req, res, next) => {
+    const userCount = await countUsersWithEmail(req.body.email);
+    
+    if(userCount > 0){
+        return  res.status(409).send('Email address already in use');
+    }
+    
+    const password = await bcrypt.hash(req.body.password, encryptConfig.saltRounds);
+    req.body['password'] = password;
+    
+    const user = await createUser(req.body);
+    
+    if(user){
+        return res.status(200).json(userDataResponse(user));
+    }
+    
+    if(!user){
+        return res.status(400).send('Bad request');
+    }
 };
 
-exports.updateUser = (req, res) => {
-    findUserById(req.swagger.params.userId.value).then(user => {
-        if (!user) {
-            return Promise.reject(new HTTPError(400));
-        }
-        
-        return user.update(req.body);
-    }).then(user => {
-        res.json(userDataResponse(user));
-    }).catch(promiseError.handle(res));
+exports.getUsers = async (req, res, next) => {
+    const userData = await getUsers(req.swagger.params.limit.value, req.swagger.params.offset.value);
+    
+    if(userData){
+        return res.json(userData.map(user => userDataResponse(user)));
+    }
+    
+    if(!userData){
+        return res.status(400).send('Bad request');
+    }
+}
+
+exports.updateUser = async (req, res, next) => {
+    const user = await findUserById(req.swagger.params.userId.value);
+    
+    if(user){
+        const updated = await user.update({
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            updatedAt: new Date()
+        });
+    
+        return res.status(200).json(userDataResponse(updated));
+    }
+    
+    if(!user){
+        return res.status(404).send('Not found');
+    }
 };
 
-exports.listUsers = (req, res) => {
-    getUsers(req.swagger.params.limit.value, req.swagger.params.offset.value)
-        .then(users => res.json(users.map(user => userDataResponse(user))))
-        .catch(promiseError.handle(res));
-};
-
-exports.getUser = (req, res) => {
-    findUserById(req.swagger.params.userId.value)
-        .then(user => !user ? Promise.reject(new HTTPError(404)) : res.json(
-            userDataResponse(user)))
-        .catch(promiseError.handle(res));
+exports.getUser = async (req, res, next) => {
+    const user = await findUserById(req.swagger.params.userId.value);
+    
+    if(user){
+        return res.status(200).json(userDataResponse(user));
+    }
+    
+    if(!user){
+        return res.status(404).send('Not found');
+    }
 };

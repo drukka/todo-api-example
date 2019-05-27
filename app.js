@@ -33,12 +33,9 @@ Promise.all(apiVersions.map(swaggerMiddleware.initialize)).then(values => {
     app.use(_.flatten(values.map(value => {
         const { middleware } = value;
         return [
-            // Interpret Swagger resources and attach metadata to request - must be first in swagger-tools middleware chain
             middleware.swaggerMetadata(),
             
             swaggerMiddleware.trimStrings(),
-            
-            // Validate Swagger requests
             middleware.swaggerValidator()
         ];
     })));
